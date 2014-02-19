@@ -56,10 +56,10 @@ class Signature implements SignatureInterface
      */
     public function getSignature(UriInterface $uri, array $params, $method = 'POST')
     {
-		switch (strtoupper($this->algorithm)) {
-            case 'PLAINTEXT':
-				return $this->getSigningKey();
-			case 'HMAC-SHA1':
+	switch (strtoupper($this->algorithm)) {
+        	case 'PLAINTEXT':
+			return $this->getSigningKey();
+		case 'HMAC-SHA1':
 			parse_str($uri->getQuery(), $queryStringData);
 	
 			foreach (array_merge($queryStringData, $params) as $key => $value) {
