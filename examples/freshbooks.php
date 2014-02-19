@@ -49,7 +49,7 @@ if (!empty($_GET['oauth_token'])) {
 	// $freshbooks->request( $path = null, $method = 'POST', $body =  'The xml body as per Freshbooks documentation' );
 	$result = $freshbooks->request( null, 'POST', '<?xml version="1.0" encoding="utf-8" ?><request method="staff.current"></request>' );
 
-	$result= new \SimpleXmlElement($result);
+	$result= new SimpleXmlElement($result);
 
     // Show some of the resultant data
     echo $result->staff->username . ' has authorised this website to see their Freshbooks account information.';
