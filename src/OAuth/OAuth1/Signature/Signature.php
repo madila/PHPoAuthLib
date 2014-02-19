@@ -56,28 +56,34 @@ class Signature implements SignatureInterface
      */
     public function getSignature(UriInterface $uri, array $params, $method = 'POST')
     {
-        parse_str($uri->getQuery(), $queryStringData);
-
-        foreach (array_merge($queryStringData, $params) as $key => $value) {
-            $signatureData[rawurlencode($key)] = rawurlencode($value);
-        }
-
-        ksort($signatureData);
-
-        // determine base uri
-        $baseUri = $uri->getScheme() . '://' . $uri->getRawAuthority();
-
-        if ('/' === $uri->getPath()) {
-            $baseUri .= $uri->hasExplicitTrailingHostSlash() ? '/' : '';
-        } else {
-            $baseUri .= $uri->getPath();
-        }
-
-        $baseString = strtoupper($method) . '&';
-        $baseString .= rawurlencode($baseUri) . '&';
-        $baseString .= rawurlencode($this->buildSignatureDataString($signatureData));
-
-        return base64_encode($this->hash($baseString));
+		switch (strtoupper($this->algorithm)) {
+            case 'PLAINTEXT':
+				return $this->getSigningKey();
+			case 'HMAC-SHA1':
+			parse_str($uri->getQuery(), $queryStringData);
+	
+			foreach (array_merge($queryStringData, $params) as $key => $value) {
+				$signatureData[rawurlencode($key)] = rawurlencode($value);
+			}
+	
+			ksort($signatureData);
+	
+			// determine base uri
+			$baseUri = $uri->getScheme() . '://' . $uri->getRawAuthority();
+	
+			if ('/' === $uri->getPath()) {
+				$baseUri .= $uri->hasExplicitTrailingHostSlash() ? '/' : '';
+			} else {
+				$baseUri .= $uri->getPath();
+			}
+	
+			$baseString = strtoupper($method) . '&';
+			$baseString .= rawurlencode($baseUri) . '&';
+			$baseString .= rawurlencode($this->buildSignatureDataString($signatureData));
+			
+			return base64_encode($this->hash($baseString));		
+			
+		}
     }
 
     /**
